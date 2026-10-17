@@ -30,6 +30,7 @@ KITTY_APP="/其他路径/kitty.app" bash scripts/install-hotkey.sh
 | `kitty.conf` | Kitty 主入口，最后加载主题配置 |
 | `obsidian.conf` | 字体、配色、半透明背景、光标动画、分屏快捷键 |
 | `quick-access-terminal.conf` | 下拉窗口的位置、高度、输入法兼容的置顶层级 |
+| `shaders/obsidian-focus.pipeline` | 原生分屏焦点光效与非当前分屏轻微暗化的参数 |
 | `hotkey/main.c` | Option+空格全局热键源码，调用 Kitty 原生单实例切换 |
 | `scripts/install-hotkey.sh` | 检查环境、编译本机程序、生成并加载登录自启动项 |
 | `scripts/uninstall-hotkey.sh` | 移除热键程序和自启动项，保留 Kitty 配置 |
@@ -43,6 +44,18 @@ KITTY_APP="/其他路径/kitty.app" bash scripts/install-hotkey.sh
 以上文件不需要放进 Git；在新机器运行安装脚本即可重新生成。源码只在仓库内维护。助手仅监听一个快捷键，不记录输入，空闲时阻塞等待系统事件。
 
 ## 日常更新与屏幕适配
+
+视觉效果采用原生光标运动模糊、220 毫秒的分屏焦点光效，以及非当前分屏的轻微暗化。焦点动画结束后停止；静态暗化不主动请求连续动画帧，半透明背景与标签栏配色保留。参数均有中文注释，位于 `shaders/obsidian-focus.pipeline`；无需安装插件或重编译热键助手。
+
+键盘提示标签使用冰青色字母标记。按下面的快捷键后输入目标旁边的字母即可选择，按 `Esc` 取消：
+
+| 快捷键 | 操作 |
+| --- | --- |
+| `Cmd+Shift+E` | 选择屏幕上的链接并用默认浏览器打开 |
+| `Cmd+Shift+P` | 选择文件路径并复制到剪贴板 |
+| `Cmd+Shift+Y` | 选择整行内容并复制到剪贴板 |
+
+标签作用于当前终端屏幕，不是全局文件搜索；路径与整行模式只复制，不会执行文本中的命令。Kitty 原有的 Hints 快捷键仍可使用。
 
 创建分屏：先按 `Cmd+D`，再按 `← / → / ↑ / ↓`，分别在当前分屏的左、右、上、下创建新分屏；第二步可以继续按住 Cmd。新分屏继承当前目录并获得焦点。原来的单独 `Cmd+D` 和 `Cmd+Ctrl+D` 创建分屏方式已替换。`Cmd+Option+方向键` 仍用于切换已有分屏，`Cmd+Shift+Enter` 用于专注当前分屏／恢复布局。
 

@@ -1,0 +1,44 @@
+# 使用 Kitty 内置 focus-highlight，不复制或修改着色器源码。
+# 第一组：轻微暗化非当前分屏；静态效果不主动请求连续动画帧。
+startgroup
+    # 仅在内容或事件变化时重绘。
+    animation_step 0
+    # 当前分屏保持原亮度，不叠加持续高亮。
+    var float HIGHLIGHT_INTENSITY = 0
+    # 静态层不绘制边缘光效。
+    var float BORDER_WIDTH = 0
+    # 非当前分屏保留 78% 的线性色值；视觉上是轻微暗化，并非文字透明。
+    var float INACTIVE_DIM = 0.78
+    # 保留标签栏原配色，仅作用于终端内容区域。
+    var bool DIM_CENTRAL_AREA_ONLY = true
+    # 当前分屏的留白和边框也保持原亮度，避免周围出现暗框。
+    var bool INCLUDE_WINDOW_PADDING = true
+    # 复用 Kitty 内置焦点着色器；保留背景原有透明度。
+    shaders focus-highlight
+endgroup
+
+# 第二组：切换分屏时短暂提亮目标区域，220 毫秒内平滑消退。
+startgroup
+    # 只由分屏获得焦点触发，不在每次输入时闪动。
+    animation_start window-focus-in
+    # 动画在 220 毫秒后结束；失去窗口焦点时立即停止。
+    animation_stop 220 | os-window-focus-out
+    # 前段快速减弱，尾段柔和收束。
+    animation_curve ease-out
+    # 动画期间约每 16 毫秒更新，结束后不持续播放。
+    animation_step 16
+    # 正文仅短暂提亮 8%，避免大面积闪白。
+    var float HIGHLIGHT_INTENSITY = 0.08
+    # 边缘光效宽度为窗口归一化尺寸的 0.8%。
+    var float BORDER_WIDTH = 0.008
+    # 降低边缘亮度，沿用原配色，不引入彩虹或霓虹色。
+    var float BORDER_GLOW = 0.18
+    # 非当前分屏的暗化交给第一组，避免重复压暗。
+    var float INACTIVE_DIM = 1.0
+    # 标签栏不参与焦点动画。
+    var bool DIM_CENTRAL_AREA_ONLY = true
+    # 让焦点光效覆盖当前分屏的留白和边框。
+    var bool INCLUDE_WINDOW_PADDING = true
+    # 复用同一内置着色器，只调整参数和触发方式。
+    shaders focus-highlight
+endgroup
