@@ -1,0 +1,122 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Vampire Gothic / Nocturne Violet — velvet plum and moonlit silver.
+# Managed with Kitty; point STARSHIP_CONFIG at this file from your shell.
+# Only the modules named here are evaluated; no custom shell commands.
+palette = 'vampire'
+add_newline = true
+scan_timeout = 30
+command_timeout = 350
+format = """
+[╭─](muted)$directory$git_branch$git_commit$git_status$git_state
+[╰─](muted)$character"""
+# Zsh places RPROMPT on the input line and hides it when input needs space.
+right_format = '$conda$java$kotlin$python$nodejs$cmd_duration$status'
+continuation_prompt = '[·](muted) '
+
+[palettes.vampire]
+obsidian = '#120F19'
+velvet = '#38264F'
+rose = '#C6A0B9'
+purple = '#BBA7D2'
+silver = '#D8D1E1'
+muted = '#8C7E9D'
+ivory = '#EEE8F4'
+
+[directory]
+format = '[](velvet)[ 󰉋 $path]($style)[$read_only]($read_only_style)[ ](bg:velvet)[](velvet) '
+style = 'bold fg:ivory bg:velvet'
+read_only = ' 󰌾'
+read_only_style = 'fg:rose bg:velvet'
+truncation_length = 3
+truncate_to_repo = true
+truncation_symbol = '…/'
+home_symbol = '~'
+
+[git_branch]
+format = '[ $branch(:$remote_branch)]($style) '
+style = 'fg:silver'
+truncation_length = 28
+truncation_symbol = '…'
+
+[git_commit]
+format = '[ $hash]($style) '
+style = 'fg:silver'
+only_detached = true
+tag_disabled = true
+
+[git_status]
+format = '([‹](muted)[$all_status$ahead_behind]($style)[›](muted) )'
+style = 'fg:purple'
+conflicted = '=${count} '
+ahead = '↑${count} '
+behind = '↓${count} '
+diverged = '↑${ahead_count} ↓${behind_count} '
+untracked = '?${count} '
+stashed = '*${count} '
+modified = '!${count} '
+staged = '+${count} '
+renamed = '»${count} '
+deleted = '−${count} '
+
+[git_state]
+format = '[· $state( $progress_current/$progress_total)]($style) '
+style = 'bold fg:rose'
+
+[character]
+success_symbol = '[❯](bold silver)'
+error_symbol = '[❯](bold rose)'
+vimcmd_symbol = '[❮](bold purple)'
+vimcmd_replace_one_symbol = '[❮](bold rose)'
+vimcmd_replace_symbol = '[❮](bold rose)'
+vimcmd_visual_symbol = '[❮](bold purple)'
+
+[java]
+format = '[](muted) [${symbol}${version}]($style) '
+symbol = ' '
+style = 'fg:purple'
+version_format = '${major}'
+detect_extensions = ['java', 'class', 'jar', 'gradle', 'kt', 'kts']
+detect_files = ['pom.xml', 'build.gradle.kts', 'build.gradle', '.java-version', '.sdkmanrc']
+
+[kotlin]
+# Show project identity without starting a JVM/compiler on every prompt.
+# The JDK version is shown by java; a global Kotlin CLI is not the build version.
+format = '[](muted) [${symbol}Kotlin]($style) '
+symbol = ' '
+style = 'fg:purple'
+detect_extensions = ['kt', 'kts']
+detect_files = ['build.gradle.kts', 'settings.gradle.kts']
+
+[python]
+format = '[](muted) [${symbol}${version}( · $virtualenv)]($style) '
+symbol = ' '
+style = 'fg:purple'
+version_format = '${major}.${minor}'
+
+[conda]
+format = '[$symbol$environment]($style) '
+symbol = ' '
+style = 'fg:purple'
+ignore_base = false
+
+[nodejs]
+format = '[](muted) [${symbol}${version}]($style) '
+symbol = ' '
+style = 'fg:purple'
+version_format = '${major}.${minor}'
+detect_extensions = ['js', 'mjs', 'cjs', 'ts', 'mts', 'cts']
+detect_files = ['package.json', '.node-version', '.nvmrc']
+detect_folders = []
+
+[cmd_duration]
+min_time = 2000
+format = '[](muted) [󱎫 $duration]($style) '
+style = 'fg:silver'
+show_notifications = false
+
+[status]
+disabled = false
+format = '[](muted) [$symbol$status]($style) '
+symbol = '× '
+style = 'bold fg:rose'

@@ -29,11 +29,44 @@ KITTY_APP="/其他路径/kitty.app" bash scripts/install-hotkey.sh
 | --- | --- |
 | `kitty.conf` | Kitty 主入口，最后加载主题配置 |
 | `obsidian.conf` | 字体、配色、半透明背景、光标动画、分屏快捷键 |
+| `vampire-gothic.conf` | 夜魅紫配色覆盖层，统一窗口、标签栏与提示符色调 |
+| `starship.toml` | Starship 双行提示符，目录与 Git 在上行，环境与耗时在第二行右侧 |
 | `quick-access-terminal.conf` | 下拉窗口的位置、高度、输入法兼容的置顶层级 |
 | `shaders/obsidian-focus.pipeline` | 原生分屏焦点光效与非当前分屏轻微暗化的参数 |
 | `hotkey/main.c` | Option+空格全局热键源码，调用 Kitty 原生单实例切换 |
 | `scripts/install-hotkey.sh` | 检查环境、编译本机程序、生成并加载登录自启动项 |
 | `scripts/uninstall-hotkey.sh` | 移除热键程序和自启动项，保留 Kitty 配置 |
+
+## Starship 提示符
+
+提示符配置与 Kitty 一起由 Git 管理，但由 Zsh 加载。新电脑克隆后需安装 Starship 和上述 Nerd Font；例如使用 Homebrew：
+
+```sh
+brew install starship
+```
+
+在现有 `~/.zshrc` 中合并以下设置，保留自己的插件、别名和快捷键。不要直接覆盖整个文件，也不要重复添加已有的 Starship 初始化。
+
+在加载 Oh My Zsh、Conda 和 virtualenv 之前设置：
+
+```zsh
+ZSH_THEME=""
+export CONDA_CHANGEPS1=false
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+```
+
+在 `~/.zshrc` 末尾、环境管理器初始化之后设置：
+
+```zsh
+export STARSHIP_CONFIG="$HOME/.config/kitty/starship.toml"
+if (( $+commands[starship] )); then
+  eval "$(starship init zsh)"
+fi
+```
+
+执行 `exec zsh` 或新开终端生效。路径使用 `$HOME`，不依赖本机用户名；之后拉取 `starship.toml` 更新会在下次提示符渲染时生效。Conda 环境（包括 `base`）显示在第二行右侧，Python、Node.js 和 JDK 信息按项目出现；Kotlin 只显示项目标识，避免每次渲染启动编译器。
+
+无需把个人 `~/.zshrc`、凭据或本机备份提交到本仓库。本仓库的热键助手面向 macOS，Starship 配置本身可供其他安装了 Zsh、Starship 和 Nerd Font 的电脑使用。
 
 ## 本机生成的文件
 
@@ -47,7 +80,7 @@ KITTY_APP="/其他路径/kitty.app" bash scripts/install-hotkey.sh
 
 视觉效果采用原生光标运动模糊、220 毫秒的分屏焦点光效，以及非当前分屏的轻微暗化。焦点动画结束后停止；静态暗化不主动请求连续动画帧，半透明背景与标签栏配色保留。参数均有中文注释，位于 `shaders/obsidian-focus.pipeline`；无需安装插件或重编译热键助手。
 
-键盘提示标签使用冰青色字母标记。按下面的快捷键后输入目标旁边的字母即可选择，按 `Esc` 取消：
+键盘提示标签使用紫底银白色字母标记。按下面的快捷键后输入目标旁边的字母即可选择，按 `Esc` 取消：
 
 | 快捷键 | 操作 |
 | --- | --- |
@@ -63,7 +96,7 @@ KITTY_APP="/其他路径/kitty.app" bash scripts/install-hotkey.sh
 
 当前面板高度针对 1512×982 屏幕设置：`lines 738px` 加上实测留白约为 786px，**不是自动按屏幕百分比计算**。换屏幕后可在 `quick-access-terminal.conf` 调整 `lines`。如果调整了字体、留白，也应检查实际窗口尺寸。
 
-下拉面板的 `background_opacity` 会覆盖主题值；需要统一透明度时同步修改两个文件。`kitty.conf` 中与主题重复的值以最后加载的 `obsidian.conf` 为准。
+下拉面板的 `background_opacity` 会覆盖主题值；需要统一透明度时同步修改两个文件。`kitty.conf` 先加载 `obsidian.conf`，再加载 `vampire-gothic.conf`；重复的配色以最后加载的紫色主题为准。
 
 ## 检查和卸载
 
