@@ -55,7 +55,7 @@ fi
 # 先准备编译产物与本机 plist，成功后才替换现有助手，避免编译失败中断热键。
 build_dir="$(mktemp -d "${TMPDIR:-/tmp}/kitty-hotkey.XXXXXX")"
 trap 'rm -rf "$build_dir"' EXIT
-xcrun clang -Wall -Wextra -Werror -O2 -framework Carbon \
+xcrun clang -Wall -Wextra -Werror -O2 -x objective-c -framework Carbon -framework Cocoa \
     "$repo_dir/hotkey/main.c" -o "$build_dir/kitty-hotkey"
 plist="$build_dir/$label.plist"
 /usr/bin/plutil -create xml1 "$plist"

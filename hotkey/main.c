@@ -1,5 +1,7 @@
 // 仅注册 Option+空格；窗口、输入法和显示/隐藏逻辑全部交给 Kitty 原生面板。
 #include <Carbon/Carbon.h>
+#import <Cocoa/Cocoa.h>
+#include <math.h>
 #include <signal.h>
 #include <spawn.h>
 #include <stdio.h>
@@ -7,6 +9,29 @@
 
 extern char **environ;
 static char *kitten_path;
+
+// 与 Kitty 选择活动显示器的方式一致：使用鼠标所在屏幕。
+// center 面板通过外边距确定窗口大小，避免字体、缩放和内部留白改变总高度。
+static int panel_bottom_margin(int *top_margin) {
+    @autoreleasepool {
+        NSPoint mouse = [NSEvent mouseLocation];
+        NSScreen *target = [NSScreen mainScreen];
+        for (NSScreen *screen in [NSScreen screens]) {
+            if (NSPointInRect(mouse, [screen frame])) {
+                target = screen;
+                break;
+            }
+        }
+        NSRect frame = [target frame];
+        NSRect visible = [target visibleFrame];
+        CGFloat menu_height = NSMaxY(frame) - NSMaxY(visible);
+        // 使用物理屏幕边界，并显式留出菜单栏，避免显示面板时菜单栏变化影响高度。
+        *top_margin = (int)round(menu_height);
+        CGFloat panel_height = NSHeight(frame) + 1 - *top_margin;
+        CGFloat desired_height = round(NSHeight(frame) * 0.80);
+        return (int)MAX(0, round(panel_height - desired_height));
+    }
+}
 
 static OSStatus toggle_kitty(EventHandlerCallRef next, EventRef event, void *data) {
     (void)next;
@@ -18,7 +43,15 @@ static OSStatus toggle_kitty(EventHandlerCallRef next, EventRef event, void *dat
         return eventNotHandledErr;
 
     // 不使用 --detach：直接调用原生单实例切换，首次调用也可以启动面板。
-    char *args[] = {kitten_path, "quick-access-terminal", NULL};
+    char bottom_margin[64];
+    char top_margin[64];
+    int top;
+    int bottom = panel_bottom_margin(&top);
+    snprintf(bottom_margin, sizeof(bottom_margin), "margin_bottom=%d", bottom);
+    snprintf(top_margin, sizeof(top_margin), "margin_top=%d", top);
+    char *args[] = {kitten_path, "quick-access-terminal",
+        "--override", "edge=center", "--override", top_margin,
+        "--override", bottom_margin, NULL};
     pid_t child;
     posix_spawnattr_t attributes;
     int error = posix_spawnattr_init(&attributes);
