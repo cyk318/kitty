@@ -103,6 +103,19 @@ Option+空格每次按下时，热键助手根据鼠标所在显示器重新计�
 
 下拉面板的 `background_opacity` 会覆盖主题值；需要统一透明度时同步修改两个文件。`kitty.conf` 先加载 `obsidian.conf`，再加载 `vampire-gothic.conf`；重复的配色以最后加载的紫色主题为准。
 
+## 用 Neovim 查看终端历史
+
+已接入 `kitty-scrollback.nvim`，由 `~/.config/nvim` 的 lazy.nvim 配置加载，固定版本为 v9.3.1。
+
+| 快捷键 | 操作 |
+| --- | --- |
+| `Ctrl+Shift+H` | 在 Neovim 中查看当前终端保留的历史输出 |
+| `Ctrl+Shift+G` | 只查看上一条 Shell 命令的输出 |
+
+进入后用 `/关键词` 搜索、`n` / `N` 跳转、`v` 选择文本，`空格 y` 复制到系统剪贴板并返回终端；`:qa!` 退出。上一条命令输出依赖 Kitty Shell integration 的命令边界标记。
+
+首次配置后保存工作并完全退出、重新打开 Kitty，使 Unix socket 监听生效；只重载配置不足以启用监听。普通窗口和下拉终端共用这些快捷键。在 Kitty 内运行 `nvim +'KittyScrollbackCheckHealth'` 可检查完整链路。
+
 ## 检查和卸载
 
 ```sh
