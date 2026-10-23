@@ -27,6 +27,8 @@ THEMES = [
     ('forest-emerald', '墨玉 Jade Ink', '墨绿底块，柔玉色微光'),
     ('champagne-blush', '玫瑰灰 Rose Ash', '灰玫瑰配暖银，轻柔不甜腻'),
     (DEFAULT, '诱惑紫色 Temptation Purple', '原有丝绒紫、银灰与柔玫瑰'),
+    ('aurora-ink', '极光墨 Aurora Ink', '墨蓝紫底块、冰薄荷微光，冷静的未来感'),
+    ('plum-apricot', '暮杏 Plum Apricot', '烟梅紫底块、雾杏色微光，温柔的冷暖交错'),
 ]
 PROMPT_KEYS = {'obsidian', 'velvet', 'rose', 'purple', 'silver', 'muted', 'ivory'}
 CURSOR_KEYS = {'cursor', 'cursor_text_color', 'cursor_trail_color'}
@@ -60,14 +62,36 @@ def selected():
         return DEFAULT
 
 
+def terminal_colors(colors):
+    """从同一调色板生成终端界面色；ANSI 红绿黄蓝保留工具的语义。"""
+    roles = {
+        'background': 'obsidian', 'foreground': 'silver',
+        'selection_background': 'velvet', 'selection_foreground': 'ivory',
+        'url_color': 'purple', 'active_border_color': 'cursor_trail_color',
+        'inactive_border_color': 'velvet', 'bell_border_color': 'rose',
+        'tab_bar_background': 'obsidian', 'tab_bar_margin_color': 'obsidian',
+        'active_tab_foreground': 'ivory', 'active_tab_background': 'velvet',
+        'inactive_tab_foreground': 'muted', 'inactive_tab_background': 'obsidian',
+        'color0': 'velvet', 'color7': 'silver', 'color8': 'muted', 'color15': 'ivory',
+    }
+    return {**{key: colors[key] for key in CURSOR_KEYS},
+            **{key: colors[role] for key, role in roles.items()}}
+
+
 def emit():
     """原紫色已由静态 include 加载；加载失败时不输出覆盖项。"""
     try:
         colors = palette(selected())
     except (OSError, ValueError, TypeError):
         return
-    for key in sorted(CURSOR_KEYS):
-        print(key, colors[key])
+    for key, value in sorted(terminal_colors(colors).items()):
+        print(key, value)
+    # 覆盖静态紫色提示标签，保留原动作与快捷键。
+    print('action_alias obsidian_hints kitten hints --alphabet asdfghjklqwertyuiopzxcvbnm '
+          '--hints-offset 0 --prefix-free '
+          f'--hints-foreground-color {colors["ivory"]} '
+          f'--hints-background-color {colors["velvet"]} '
+          f'--hints-text-color {colors["silver"]}')
 
 
 def prompt_text(theme):
@@ -158,7 +182,7 @@ def targets():
 
 
 def switch(theme):
-    colors = palette(theme)
+    colors = terminal_colors(palette(theme))
     prompt_text(theme)
     # 串行化不同窗口中的菜单；锁文件存在不代表锁仍被占用。
     with (ROOT / '.theme-state.lock').open('a') as lock:
@@ -172,7 +196,7 @@ def switch(theme):
                 remote(address, 'load-config')
                 actual = dict(line.split(None, 1) for line in
                               remote(address, 'get-colors', '--configured').splitlines() if line.strip())
-                if any(actual.get(key) != colors[key] for key in CURSOR_KEYS):
+                if any(actual.get(key) != value for key, value in colors.items()):
                     raise ValueError('重载后的颜色不匹配，请检查配置覆盖项或 geninclude 是否启用')
         except (OSError, ValueError, subprocess.TimeoutExpired, KeyboardInterrupt):
             atomic_state(old)
@@ -196,7 +220,7 @@ def main():
             raise ValueError('用法：color（交互菜单），或 color <主题英文标识>')
     else:
         active = selected()
-        print('\n  提示符与光标 · 色彩书房\n  ' + '─' * 36)
+        print('\n  终端主题 · 黑色半透明色彩书房\n  ' + '─' * 36)
         for number, (slug, title, description) in enumerate(THEMES, 1):
             marker = '●' if slug == active else ' '
             print(f' {marker} {number:2d}  {title} · {description}')
@@ -208,7 +232,7 @@ def main():
         print('\n  q  退出，不修改当前主题\n')
         while True:
             try:
-                answer = input('  选择主题 [1–13 / q]：').strip()
+                answer = input(f'  选择主题 [1–{len(THEMES)} / q]：').strip()
             except EOFError:
                 return
             if answer.lower() == 'q':
@@ -216,7 +240,7 @@ def main():
             if len(answer) <= 2 and answer.isascii() and answer.isdigit() and 1 <= int(answer) <= len(THEMES):
                 choice = THEMES[int(answer) - 1][0]
                 break
-            print('  请输入 1–13，或 q 退出。')
+            print(f'  请输入 1–{len(THEMES)}，或 q 退出。')
     switch(choice)
 
 
