@@ -17,7 +17,7 @@ THEMES = [
     ('creamy-ivory', '月光银 Moonstone', '石墨蓝灰、月光银白，同色层次清冷干净'),
     ('sage-green', '烟松青 Pine Mist', '翡翠绿、薄荷青，珊瑚色点缀'),
     ('oxblood-burgundy', '黑樱桃 Black Cherry', '浓樱红、亮玫瑰，莓果色光标'),
-    ('sandstone-taupe', '白茶金 White Tea', '琥珀茶金、蜜桃橙，薄荷青提亮'),
+    ('sandstone-taupe', '白茶金 White Tea', '琥珀茶金、蜜桃橙，暖茶金提亮'),
     (DEFAULT, '诱惑紫色 Temptation Purple', '原有丝绒紫、银灰与柔玫瑰'),
     ('aurora-ink', '霓虹夜城 Neon City', '深靛紫 × 电光青 × 霓虹洋红，夜城招牌般的赛博撞色'),
 ]

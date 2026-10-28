@@ -43,7 +43,7 @@ KITTY_APP="/其他路径/kitty.app" bash scripts/install-hotkey.sh
 | 1 | 月光银 Moonstone | 石墨蓝灰与月光银白，清冷干净 | `creamy-ivory` |
 | 2 | 烟松青 Pine Mist | 翡翠绿与薄荷青，珊瑚色点缀 | `sage-green` |
 | 3 | 黑樱桃 Black Cherry | 浓樱红与亮玫瑰，莓果色光标 | `oxblood-burgundy` |
-| 4 | 白茶金 White Tea | 琥珀茶金与蜜桃橙，薄荷青点缀 | `sandstone-taupe` |
+| 4 | 白茶金 White Tea | 琥珀茶金与蜜桃橙，暖茶金点缀 | `sandstone-taupe` |
 | 5 | 诱惑紫色 Temptation Purple | 原 13，配色原样保留 | `temptation-purple` |
 | 6 | 霓虹夜城 Neon City | 深靛紫色块、电光青光标、霓虹洋红状态字与冷银正文 | `aurora-ink` |
 
