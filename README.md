@@ -31,20 +31,25 @@ KITTY_APP="/其他路径/kitty.app" bash scripts/install-hotkey.sh
 [[ -r "$HOME/.config/kitty/scripts/color.zsh" ]] && source "$HOME/.config/kitty/scripts/color.zsh"
 ```
 
-新开终端后运行 `color`，输入 1–15 选择主题，输入 `q` 或按 Ctrl+C 取消。
+新开终端后运行 `color`，输入 1–6 选择主题，输入 `q` 或按 Ctrl+C 取消。
 已经打开的 Shell 可以先运行 `source ~/.config/kitty/scripts/color.zsh`，无需重启正在运行的任务。
 支持 `color sage-green` 这样的直接选择；英文标识见 `themes/*.conf`，原紫色标识为 `temptation-purple`。
 依赖 Python 3 与 Kitty 的 `kitten` 命令，本机验证版本为 Kitty 0.49.2。
 
-菜单包含月光银、烟松青、深海蓝、黑樱桃、鸢尾灰、白茶金、月下青、雨雾蓝、烟铜色、铅笔灰、墨玉、玫瑰灰，以及默认诱惑紫色。新配色统一采用暗色目录块、柔和文字和低饱和点缀，避免浅色大块与荧光色抢眼。交互菜单会直接显示提示符和光标色样。
-主题文件的英文标识和编号沿用旧值，兼容已有保存状态与命令；例如 `color sage-green` 现在选择烟松青，`color sandstone-taupe` 选择白茶金。
+前五套配色侧重统一色调与阅读舒适，第六套用深靛紫、电光青与霓虹洋红营造夜城招牌般的赛博撞色；亮色集中在提示符和光标，正文保持冷银色。交互菜单会直接显示提示符和光标色样。
 
-新增两套双色主题，原 1–13 编号不变：
+| 编号 | 主题 | 配色特点 | 英文标识 |
+| --- | --- | --- | --- |
+| 1 | 月光银 Moonstone | 石墨蓝灰与月光银白，清冷干净 | `creamy-ivory` |
+| 2 | 烟松青 Pine Mist | 翡翠绿与薄荷青，珊瑚色点缀 | `sage-green` |
+| 3 | 黑樱桃 Black Cherry | 浓樱红与亮玫瑰，莓果色光标 | `oxblood-burgundy` |
+| 4 | 白茶金 White Tea | 琥珀茶金与蜜桃橙，薄荷青点缀 | `sandstone-taupe` |
+| 5 | 诱惑紫色 Temptation Purple | 原 13，配色原样保留 | `temptation-purple` |
+| 6 | 霓虹夜城 Neon City | 深靛紫色块、电光青光标、霓虹洋红状态字与冷银正文 | `aurora-ink` |
 
-- **14 · 极光墨 Aurora Ink**：墨蓝紫目录块配冰薄荷光标与边框，银灰正文、灰紫状态文字。冷调但不使用荧光色，运行 `color aurora-ink`。
-- **15 · 暮杏 Plum Apricot**：烟梅紫目录块配雾杏光标与边框，暖银正文、灰薰衣草状态文字。用少量暖色打破暗紫的沉闷，运行 `color plum-apricot`。
+编号重新排列为 1–6；保留主题的英文标识不变，因此已保存的选择仍然有效。第六套为霓虹夜城，沿用 `aurora-ink` 标识；运行 `color` 选 6，或 `color aurora-ink`。其余九套已从菜单和主题目录移除；旧状态若指向已移除主题，沿用现有机制回退到诱惑紫色。
 
-每套配色覆盖两行 Starship 提示符的目录胶囊、Git 分支/状态、连接线、图标、箭头和右侧环境信息，以及 Kitty 输入光标和拖尾。终端背景、正文、活动/非活动边框、铃声边框、选区、标签栏及其留白、URL 高亮和快捷提示标签同步配色。15 套背景均为带轻微主题色的近黑幕布；主窗口透明度仍为 0.82、模糊为 12，下拉窗口沿用自己的透明度。ANSI 灰阶 0/7/8/15 跟随主题，红绿黄蓝等语义色保持原值。字体、布局、光标形状、动画和快捷键保持原样。
+每套配色覆盖两行 Starship 提示符的目录胶囊、Git 分支/状态、连接线、图标、箭头和右侧环境信息，以及 Kitty 输入光标和拖尾。终端背景、正文、活动/非活动边框、铃声边框、选区、标签栏及其留白、URL 高亮和快捷提示标签同步配色。6 套背景均为带轻微主题色的近黑幕布；主窗口透明度仍为 0.82、模糊为 12，下拉窗口沿用自己的透明度。ANSI 灰阶 0/7/8/15 跟随主题，红绿黄蓝等语义色保持原值。字体、布局、光标形状、动画和快捷键保持原样。
 
 选择结果原子保存到 `.theme-state.json`，不进入 Git。`starship.toml` 保留原始布局和默认配色，脚本只替换它的调色板，生成 `.theme-state-starship.toml`，再通过 `STARSHIP_CONFIG` 加载。已加载新版 `color.zsh` 的各个 Shell 共用此文件，在下一次显示提示符时使用新配色，不重画历史内容、不向正在运行的程序发送按键。旧 Shell 须先各执行一次 `source ~/.config/kitty/scripts/color.zsh`；新 Shell 自动加载。
 `kitty.conf` 通过 `geninclude scripts/theme-load.py` 输出终端主题颜色与提示标签配色。状态缺失、损坏、未知主题或主题内容不完整时回退原紫色；Shell 初始化时也会校验状态并修复生成的 Starship 配置，不执行状态文件里的内容。
@@ -52,7 +57,21 @@ KITTY_APP="/其他路径/kitty.app" bash scripts/install-hotkey.sh
 
 原生机制参考：[Starship 调色板与配置路径](https://starship.rs/config/)、[Kitty 配置生成与加载](https://sw.kovidgoyal.net/kitty/conf/)、[远程配置重载](https://sw.kovidgoyal.net/kitty/remote-control/)。
 
-验证（2026-10-22，全局主题扩展）：
+历史验证（2026-10-23，精简为六套、替换血夜前）：
+
+- 10 项离线回归通过，包括六个编号的选择、主题目录与菜单一致，以及旧主题状态回退。
+- 六套主题通过 Kitty 原生解析，透明度保持 0.82；检查的文字和光标组合最低对比度为 5.15:1，不计桌面透色影响。
+- 原 13、14 的主题文件与 HEAD 逐字节一致，现为 5、6；其余九套主题文件已移除。
+- 按实时保存的选择重载并回读 1 个 Kitty 实例成功，当前为诱惑紫色；未轮播其他配色。未做桌面截图观感验收。
+
+历史验证（2026-10-23，精简前的 1–12 组合配色）：
+
+- `python3 scripts/test-theme.py`：现有 9 项回归通过；15 套主题通过 Kitty 原生配置解析，透明度保持 0.82。
+- 1–12 的正文对比度均超过 12:1；正文、辅助文字、状态文字、错误提示、目录文字与光标的检查组合中，最低对比度为 5.41:1。计算不包含半透明背景透出的桌面影响。
+- 13–15 的主题文件与修改前提交逐字节一致；当前选择继续保留极光墨，未自动轮播或切换用户窗口。
+- `git diff --check` 通过。本次未做桌面截图观感验收；可用 `color` 菜单的真彩色预览比较组合。
+
+历史验证（2026-10-22，全局主题扩展）：
 
 - `python3 scripts/test-theme.py`：9 项回归通过，包括菜单、状态恢复、缓存修复、近黑背景约束，以及光标正确但背景被覆盖时仍回退。
 - Kitty 原生配置解析器加载 15 套主题通过；透明度 0.82 与模糊 12 均保留。
@@ -67,7 +86,7 @@ KITTY_APP="/其他路径/kitty.app" bash scripts/install-hotkey.sh
 | `kitty.conf` | Kitty 主入口，最后加载主题配置 |
 | `obsidian.conf` | 字体、配色、半透明背景、光标动画、分屏快捷键 |
 | `vampire-gothic.conf` | 夜魅紫配色覆盖层，统一窗口、标签栏与提示符色调 |
-| `themes/*.conf` | 15 套共享调色板、近黑背景与光标颜色 |
+| `themes/*.conf` | 6 套共享调色板、近黑背景与光标颜色 |
 | `scripts/color.zsh`、`scripts/theme.py` | `color` 入口、交互菜单、同步与持久化 |
 | `scripts/theme-load.py` | Kitty 启动和重载时校验状态并输出终端主题 |
 | `starship.toml` | Starship 双行提示符，目录与 Git 在上行，环境与耗时在第二行右侧 |

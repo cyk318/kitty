@@ -14,21 +14,12 @@ ROOT = Path(__file__).resolve().parent.parent
 STATE = ROOT / '.theme-state.json'
 DEFAULT = 'temptation-purple'
 THEMES = [
-    ('creamy-ivory', '月光银 Moonstone', '冷银文字、淡灰层次，清淡耐看'),
-    ('sage-green', '烟松青 Pine Mist', '灰绿点缀，像雾里的松针'),
-    ('midnight-navy', '深海蓝 Deep Ocean', '墨蓝底块，柔和的海盐蓝'),
-    ('oxblood-burgundy', '黑樱桃 Black Cherry', '暗樱红与灰玫瑰，浓郁但克制'),
-    ('dusty-lavender', '鸢尾灰 Iris Haze', '灰调鸢尾，柔软轻盈'),
-    ('sandstone-taupe', '白茶金 White Tea', '茶褐底块，一点柔金'),
-    ('cyber-teal', '月下青 Moonlit Teal', '烟青与冷白，去掉荧光感'),
-    ('powder-blue', '雨雾蓝 Rain Blue', '灰蓝与雾白，安静清透'),
-    ('terracotta', '烟铜色 Smoked Copper', '深咖底块，低饱和的铜色'),
-    ('graphite-monochrome', '铅笔灰 Pencil Graphite', '近乎无彩色，干净利落'),
-    ('forest-emerald', '墨玉 Jade Ink', '墨绿底块，柔玉色微光'),
-    ('champagne-blush', '玫瑰灰 Rose Ash', '灰玫瑰配暖银，轻柔不甜腻'),
+    ('creamy-ivory', '月光银 Moonstone', '石墨蓝灰、月光银白，同色层次清冷干净'),
+    ('sage-green', '烟松青 Pine Mist', '翡翠绿、薄荷青，珊瑚色点缀'),
+    ('oxblood-burgundy', '黑樱桃 Black Cherry', '浓樱红、亮玫瑰，莓果色光标'),
+    ('sandstone-taupe', '白茶金 White Tea', '琥珀茶金、蜜桃橙，薄荷青提亮'),
     (DEFAULT, '诱惑紫色 Temptation Purple', '原有丝绒紫、银灰与柔玫瑰'),
-    ('aurora-ink', '极光墨 Aurora Ink', '墨蓝紫底块、冰薄荷微光，冷静的未来感'),
-    ('plum-apricot', '暮杏 Plum Apricot', '烟梅紫底块、雾杏色微光，温柔的冷暖交错'),
+    ('aurora-ink', '霓虹夜城 Neon City', '深靛紫 × 电光青 × 霓虹洋红，夜城招牌般的赛博撞色'),
 ]
 PROMPT_KEYS = {'obsidian', 'velvet', 'rose', 'purple', 'silver', 'muted', 'ivory'}
 CURSOR_KEYS = {'cursor', 'cursor_text_color', 'cursor_trail_color'}

@@ -34,6 +34,9 @@ class ThemeTest(unittest.TestCase):
 
     def test_complete_palettes_and_default(self):
         self.assertEqual(theme.selected(), theme.DEFAULT)
+        self.assertEqual(len(theme.THEMES), 6)
+        self.assertEqual({path.stem for path in (theme.ROOT / 'themes').glob('*.conf')},
+                         {slug for slug, _, _ in theme.THEMES})
         for slug, _, _ in theme.THEMES:
             self.assertEqual(set(theme.palette(slug)), theme.KEYS)
         original = theme.palette(theme.DEFAULT)
@@ -112,13 +115,20 @@ class ThemeTest(unittest.TestCase):
                  contextlib.redirect_stdout(io.StringIO()):
                 theme.main()
                 switch.assert_not_called()
-        for number, expected in [('13', theme.DEFAULT), ('14', 'aurora-ink'), ('15', 'plum-apricot')]:
+        for number, expected in [('1', 'creamy-ivory'), ('2', 'sage-green'),
+                                 ('3', 'oxblood-burgundy'), ('4', 'sandstone-taupe'),
+                                 ('5', theme.DEFAULT), ('6', 'aurora-ink')]:
             with patch('builtins.input', return_value=number), \
                  patch.object(theme.sys, 'argv', ['color']), \
                  patch.object(theme, 'switch') as switch, \
                  contextlib.redirect_stdout(io.StringIO()):
                 theme.main()
                 switch.assert_called_once_with(expected)
+
+    def test_removed_theme_falls_back_to_original_purple(self):
+        theme.atomic_state(b'{"theme":"plum-apricot"}')
+        self.assertEqual(theme.selected(), theme.DEFAULT)
+        self.assertEqual(theme.prompt_config().read_bytes(), theme.prompt_text(theme.DEFAULT))
 
     def test_prompt_only_changes_palette_and_repairs_cache(self):
         original = (theme.ROOT / 'starship.toml').read_text(encoding='utf-8')
